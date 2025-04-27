@@ -26,3 +26,18 @@ def sort_char_counts(char_count):
     # Sort by 'num' in descending order
     sorted_counts.sort(reverse=True, key=lambda x: x["num"])
     return sorted_counts
+
+def print_report(book_path, word_count, sorted_char_count):
+    # Print the Bookbot report
+    print("============ BOOKBOT ============")
+    print(f"Analyzing book found at {book_path}...")
+    print("----------- Word Count ----------")
+    print(f"Found {word_count} total words")
+    print("--------- Character Count -------")
+
+    for char_info in sorted_char_count:
+        char = char_info["char"]
+        count = char_info["num"]
+        print(f"{char}: {count}")
+    
+    print("============= END ===============")
