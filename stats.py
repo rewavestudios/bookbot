@@ -1,5 +1,6 @@
 def get_book_text(filepath):
-    with open(filepath, "r") as f:
+    # Use explicit encoding and replace errors to handle odd characters robustly
+    with open(filepath, "r", encoding="utf-8", errors="replace") as f:
         return f.read()
 
 def get_num_words(book_text):

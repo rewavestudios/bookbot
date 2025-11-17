@@ -29,11 +29,14 @@ There are no external dependencies to install for the basic functionality.
 
 **Usage:**
 
+
 Run the analyzer by passing the path to a text file (one of the included books or your own text file):
 
 ```bash
 python3 main.py books/frankenstein.txt
 ```
+
+The CLI now uses a small argument parser and will show a clear error if the file is missing or unreadable.
 
 Example output (abbreviated):
 

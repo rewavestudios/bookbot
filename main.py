@@ -1,48 +1,46 @@
+import argparse
+import os
 import sys
-from stats import get_num_words, count_characters, sort_char_counts
 
-def get_book_text(filepath):
-    # Reads the text from a file.
-    with open(filepath, "r") as f:
-        return f.read()
+from stats import (
+    get_book_text,
+    get_num_words,
+    count_characters,
+    sort_char_counts,
+    print_report,
+)
+
 
 def main():
-    # Check if the path to the book is provided in the command-line arguments
-    if len(sys.argv) != 2:
-        print("Usage: python3 main.py <path_to_book>")
-        sys.exit(1)  # Exit the program with an error code if the argument is missing or incorrect
+    """Parse CLI args, read the book file, compute stats, and print a report.
 
-    # Get the book path from the command-line arguments
-    try:
-        book_path = sys.argv[1]
-    except FileNotFoundError:
-        print(f"Error: The file '{book_path}' was not found.")
+    This centralizes file IO in `stats.py` and uses `print_report` to avoid
+    duplicating output logic.
+    """
+    parser = argparse.ArgumentParser(description="Bookbot — analyze plain-text books")
+    parser.add_argument("book_path", help="Path to the book text file to analyze")
+    args = parser.parse_args()
+
+    book_path = args.book_path
+
+    if not os.path.isfile(book_path):
+        print(f"Error: The file '{book_path}' was not found or is not a regular file.")
         sys.exit(1)
-    
-    # Get the text from the book
-    book_text = get_book_text(book_path)
 
-    # Count words
-    num_words = get_num_words(book_text)
+    try:
+        book_text = get_book_text(book_path)
+    except Exception as exc:  # keep narrow in future if specific errors expected
+        print(f"Error reading '{book_path}': {exc}")
+        sys.exit(1)
 
-    # Count characters
+    # Compute metrics
+    word_count = get_num_words(book_text)
     char_count = count_characters(book_text)
-
-    # Sort characters
     sorted_char_count = sort_char_counts(char_count)
 
-    # Print report
-    print("============ BOOKBOT ============")
-    print("Analyzing book found at {book_path}...")
-    print("----------- Word Count ----------")
-    print(f"Found {num_words} total words")
-    print("--------- Character Count -------")
+    # Use the reusable report printer in stats.py
+    print_report(book_path, word_count, sorted_char_count)
 
-    for char_info in sorted_char_count:
-        print(f"{char_info['char']}: {char_info['num']}")
-    
-    print("============= END ===============")
 
-# Ensure this runs only when this script is executed directly
 if __name__ == "__main__":
     main()
